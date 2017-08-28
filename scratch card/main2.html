@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>main2</title>
+	<link rel="stylesheet" href="css/main2.css">
+	<script src="flexible.js"></script>
+</head>
+<body style="height: 3000px">
+	<div id="main2">
+		<div class="top">8月28日，做你的提款机</div>
+		<div class="scratch">
+			<div id="canvas_box">
+				<canvas id="canvas"></canvas>
+			</div>
+		</div>
+		<p class="times">我的刮奖机会：<span>0次</span></p>
+		<div class="tip"><i class="bell"></i> 此活动暂未开始，快去参加其他的活动吧！</div>
+	</div>
+</body>
+</html>
+<script>
+	(function () {
+		//获取终端尺寸
+		var w = window.innerWidth || document.body.clientWidth,
+			h = window.innerHeight || document.body.clientHeight;
+		//canvas 尺寸
+		var cw = 574/750*w,
+			ch = 204/1334*h;
+		document.getElementById("canvas_box").style.width = cw+'px'
+		document.getElementById("canvas_box").style.height = ch+'px'
+		document.getElementById("canvas_box").style.background = "url('./image/background_card04.png') no-repeat center center/cover"
+		//获奖dom
+		var prize = document.createElement("p")
+		prize.innerText = '2元免息券'
+		prize.style.cssText = "font-size:"+36/750*w+"px;line-height:"+ch+"px;position:relative;top:"+(-ch)+"px;"
+        document.getElementById("canvas_box").appendChild(prize)
+
+		var canvas = document.getElementById('canvas'),
+			ctx = canvas.getContext('2d'),
+			img = new Image();
+
+		img.src = './image/background_card02.png'
+		canvas.width = cw+2
+		canvas.height = ch+2
+		canvas.style.cssText = "position:relative;z-index:9";
+
+		img.addEventListener("load", function (e) {
+					with(ctx){
+						drawImage(img,0,0,cw,ch);
+						font = 36/750*w+"px PingFang-SC-Medium"
+						textAlign = 'center'
+						fillText('赢海量大礼',cw/2,ch/2-36/750*w+10)
+						fillText('8月28日浪漫开启',cw/2,ch/2+36/750*w)
+						globalCompositeOperation = 'destination-out';
+					}
+				}, false)
+
+		canvas.addEventListener("touchmove",function (e) {
+			var moveX = e.touches[0].clientX - canvas.offsetLeft;
+			var moveY = e.touches[0].clientY - canvas.offsetTop;
+            console.log(moveY);
+            ctx.beginPath();
+			ctx.arc(moveX, moveY, 20, 0, Math.PI * 2);
+			ctx.fillStyle = 'green';
+			ctx.fill();
+
+			var transparent = 0
+			var data = ctx.getImageData(0,0,cw,ch).data
+			for (var i = 0; i < data.length; i++) {
+				if (data[i]<10) {
+					transparent++
+				}
+			}
+			var percent = transparent/(data.length)
+			if (percent>0.3) {
+				ctx.clearRect(0,0,cw,ch)
+			}
+		})
+	})()
+
+</script>
